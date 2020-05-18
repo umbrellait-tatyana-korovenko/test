@@ -44,6 +44,32 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "close",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dm/thread/close/{threadId}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dm",
+								"thread",
+								"close",
+								"{threadId}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"protocolProfileBehavior": {}
