@@ -1,0 +1,50 @@
+{
+	"info": {
+		"_postman_id": "c1e0f278-828e-4dd7-93fe-8deffdac30dd",
+		"name": "9gag test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Token",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "loginName",
+									"value": "{{loginName}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user-token/loginMethod/9gag",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user-token",
+								"loginMethod",
+								"9gag"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
