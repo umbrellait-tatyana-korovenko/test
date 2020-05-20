@@ -1,0 +1,529 @@
+openapi: '3.0.0'
+
+info:
+  title: Notification API
+  version: 1.0.0
+  contact:
+    email: calvin@9gag.com
+  description: |
+    Production App ID: `a_f9064bdcfce8dec9a2de4c5285505d593155261a`
+
+    Staging App ID: `a_45c3bb09efeae31cdd5ad2a7320d0507e7f72f3b`
+
+    For client `/read-state.json` API calls, retrieve the params provided by 9gag user-token API `noti.readStateParams`
+
+    - ex. `appId=a_f9064bdcfce8dec9a2de4c5285505d593155261a&userId=13056498&signature=8xxxxxxdd2b7f0ee709770f58f5434exxxxd7`
+
+servers:
+- url: https://notif.9gag.com/v1
+  description: Production API
+- url: https://notif.9jokes.com/v1
+  description: Staging API
+
+tags:
+  - name: Notification
+    description: ''
+
+paths:
+  /event.json:
+    post:
+      tags:
+        - Notification
+      summary: Add or delete event
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                appId:
+                  description: App ID
+                  type: string
+                triggerUserId:
+                  description: Trigger userId
+                  type: string
+                receiverUserId:
+                  description: Receiver userId
+                  type: string
+                objectId:
+                  description: Object ID
+                  type: string
+                actionType:
+                  description: Action type
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: integer
+                transactionType:
+                  description: Timestamp
+                  type: string
+                  enum:
+                    - ADD
+                    - DELETE
+                suppData:
+                  description: Supp Data
+                  type: array
+                signature:
+                  $ref: "#/components/parameters/requestSignature"
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiNotificationEvent'
+
+  /noti.json:
+    get:
+      tags:
+        - Notification
+      summary: Get notification lists
+      parameters:
+        - name: appId
+          in: query
+          description: App ID
+          schema:
+            type: string
+        - name: userId
+          in: query
+          description: User userId
+          schema:
+            type: string
+        - name: refKey
+          in: query
+          description: Load more refKey
+          schema:
+            type: string
+        - name: itemCount
+          in: query
+          description: Item count
+          schema:
+            type: integer
+            default: 15
+        - $ref: "#/components/parameters/requestSignature"
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiNotificationList'
+
+  /noti.json?idType=USER:
+    delete:
+      tags:
+        - Notification
+      summary: Delete notification by userId
+      parameters:
+        - name: appId
+          in: query
+          description: App ID
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: userId
+          schema:
+            type: string
+        - $ref: "#/components/parameters/requestSignature"
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /noti.json?idType=OBJECT:
+    delete:
+      tags:
+        - Notification
+      summary: Delete notification by objectId
+      parameters:
+        - name: appId
+          in: query
+          description: App ID
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: objectId
+          schema:
+            type: string
+        - $ref: "#/components/parameters/requestSignature"
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /read-state.json:
+      get:
+        tags:
+          - ReadState
+        summary: Get notification list unread count
+        description: ''
+        parameters:
+          - name: appId
+            in: query
+            description: App ID
+            schema:
+              type: string
+          - name: userId
+            in: query
+            description: User userId
+            schema:
+              type: string
+          - $ref: "#/components/parameters/requestSignature"
+        responses:
+          '200':
+            description: ''
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ApiNotificationReadState'
+      post:
+        tags:
+          - ReadState
+        summary: Mark notification list as read
+        description: ''
+        requestBody:
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                properties:
+                  appId:
+                    description: App ID
+                    type: string
+                  userId:
+                    description: User userId
+                    type: string
+                  signature:
+                    $ref: "#/components/parameters/requestSignature"
+        responses:
+          '200':
+            description: ''
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ApiNotificationReadState'
+  /item-read-state.json:
+    post:
+        tags:
+          - ReadState
+        summary: Update individual notification items read state
+        description: ''
+        requestBody:
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                properties:
+                  appId:
+                    description: App ID
+                    type: string
+                  actionType:
+                    description: Action type
+                    type: string
+                  receiverUserId:
+                    description: Receiver accountId
+                    type: string
+                  objectId:
+                    description: Object ID
+                    type: string
+                  itemKey:
+                    description: Explicit item key provided
+                    type: string
+                  state:
+                    description: 1 - mark as read, 0 - mark as unread
+                    type: integer
+                  signature:
+                    $ref: "#/components/parameters/requestSignature"
+        responses:
+          '200':
+            description: ''
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ApiResponse'
+
+  /token.json:
+    post:
+      tags:
+        - PushNoti
+      summary: Update or remove push tokens
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                appId:
+                  description: App ID
+                  type: string
+                action:
+                  description: Update or Remove
+                  type: string
+                  enum:
+                    - update
+                    - remove
+                payload:
+                  description: Payload
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      userId:
+                        description: User userId
+                        type: string
+                      service:
+                        description: APNS / GCM (FCM)
+                        type: string
+                        enum:
+                          - APNS
+                          - GCM
+                      app:
+                        description: app packageId
+                        type: string
+                      token:
+                        description: push token
+                        type: string
+                      timestamp:
+                        description: Update timestamp
+                        type: integer
+                signature:
+                  $ref: "#/components/parameters/requestSignature"
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /push.json:
+    post:
+      tags:
+        - PushNoti
+      summary: Async send push notifications
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                appId:
+                  description: App ID
+                  type: string
+                items:
+                  description: Payload
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      userId:
+                        description: User userId
+                        type: string
+                      itemKey:
+                        description: Item key
+                        required: false
+                        type: string
+                      message:
+                        description: Push message
+                        type: string
+                      payload:
+                        description: Push payload
+                        required: false
+                        type: object
+                        properties:
+                          thumbnail:
+                            description: Push thumbnail url
+                            type: string
+                          itemKey:
+                            description: Push itemKey
+                            type: string
+                          t:
+                            description: Push action type
+                            type: integer
+                          e:
+                            description: Push entry ID
+                            type: string
+                            required: false
+                          c:
+                            description: Push comment ID
+                            type: string
+                            required: false
+                      count:
+                          description: Optional unread count, default to read state count
+                          type: integer
+                          required: false
+                signature:
+                  $ref: "#/components/parameters/requestSignature"
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+components:
+  schemas:
+    NotificationEvent:
+      type: object
+      properties:
+        itemKey:
+          description: Item key
+          type: string
+        appId:
+          description: App ID
+          type: string
+        triggerUserId:
+          description: Trigger userId
+          type: string
+        receiverUserId:
+          description: Receiver userId
+          type: string
+        objectId:
+          description: Object ID
+          type: string
+        actionType:
+          description: Action type
+          type: string
+        timestamp:
+          description: Timestamp
+          type: integer
+        transactionType:
+          description: Timestamp
+          type: string
+          enum:
+            - ADD
+            - DELETE
+        suppData:
+          description: Supp Data
+          type: array
+
+    NotificationItem:
+      type: object
+      properties:
+        itemKey:
+          description: Item key
+          type: string
+        appId:
+          description: App ID
+          type: string
+        triggerUserIdList:
+          description: Trigger userIds
+          type: array
+        receiverUserId:
+          description: Receiver userId
+          type: string
+        objectId:
+          description: Object ID
+          type: string
+        actionType:
+          description: Action type
+          type: string
+        suppData:
+          description: Supp Data
+          type: array
+        isRead:
+          description: Read status
+          type: integer
+        creationTimestamp:
+          description: Creation timestamp
+          type: integer
+        updatedTimestamp:
+          description: Updated timestamp
+          type: integer
+        lastPushedTimestamp:
+          description: Last pushed timestamp
+          type: integer
+        lastPushedTotalCount:
+          description: Last pushed totalCount
+          type: integer
+
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - OK
+            - ERROR
+          example: OK
+          default: OK
+        error:
+          type: string
+          example: ''
+          default: ''
+        payload:
+          type: object
+      required:
+        - status
+        - error
+        - payload
+
+    ApiNotificationReadState:
+      allOf:
+      - $ref: '#/components/schemas/ApiResponse'
+      - type: object
+        properties:
+          payload:
+            type: object
+            properties:
+              message:
+                type: string
+                description: '[Deprecated]'
+                example: ''
+              unreadCount:
+                type: integer
+                description: Unread count
+                example: 3
+              lastReadTimestamp:
+                type: integer
+                description: Timestamp of last read
+                example: 1509702163
+
+    ApiNotificationEvent:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                item:
+                  $ref: '#/components/schemas/NotificationItem'
+                event:
+                  $ref: '#/components/schemas/NotificationEvent'
+                hasPushToken:
+                  type: boolean
+
+    ApiNotificationList:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/NotificationItem'
+                nextKey:
+                  type: string
+                didEndOfList:
+                  type: integer
+
+  parameters:
+    requestSignature:
+      name: signature
+      in: query
+      required: true
+      description: |
+        See [NineGAGLib\Utils\RequestHelper::getParamsSignature](https://github.com/9gag/ninegag-php-lib/blob/development/src/Utils/RequestHelper.php)
+      schema:
+        type: string
+
