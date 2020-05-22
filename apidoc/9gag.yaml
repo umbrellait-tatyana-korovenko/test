@@ -26,6 +26,8 @@ tags:
     description: ''
   - name: Misc
     description: ''
+  - name: Message
+    description: ''
 
 
 x-globalCommonRequestHeaders: &COMMON_REQUEST_HEADERS
@@ -510,6 +512,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiPostDelete'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+
+  /dm/thread/mute/{threadId}:
+    parameters: *COMMON_AUTH_HEADERS
+    get:
+      tags:
+        - Message
+      summary: Ability to mute/unmute selected thread
+      description: ''
+      parameters:
+        - name: threadId
+          in: path
+          description: ID thread between members
+          schema:
+            type: int
+            example: 2
+        - name: mute
+          in: query
+          description: 0 - Unmute, 1 - Mute
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: A JSON response containing a list of highlights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiHighlightList'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -2094,6 +2127,14 @@ components:
               type: array
               items:
                 type: string
+
+    ApiMuteThread:
+    type: object
+    properties:
+      meta:
+        $ref: '#/components/schemas/ResponseMeta'
+      data:
+        type: object
 
     ApiHighlightList:
       type: object
