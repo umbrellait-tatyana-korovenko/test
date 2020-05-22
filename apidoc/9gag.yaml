@@ -26,11 +26,8 @@ tags:
     description: ''
   - name: Misc
     description: ''
-<<<<<<< HEAD
   - name: Message
     description: ''
-=======
->>>>>>> e1c540dbe9e7f85939d3c08666107ae901c8ffad
 
 
 x-globalCommonRequestHeaders: &COMMON_REQUEST_HEADERS
@@ -518,8 +515,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-<<<<<<< HEAD
-
   /dm/thread/mute/{threadId}:
     parameters: *COMMON_AUTH_HEADERS
     get:
@@ -550,8 +545,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-=======
->>>>>>> e1c540dbe9e7f85939d3c08666107ae901c8ffad
   /highlight-list:
     parameters: *COMMON_AUTH_HEADERS
     get:
@@ -2134,7 +2127,6 @@ components:
               items:
                 type: string
 
-<<<<<<< HEAD
     ApiMuteThread:
     type: object
     properties:
@@ -2143,8 +2135,6 @@ components:
       data:
         type: object
 
-=======
->>>>>>> e1c540dbe9e7f85939d3c08666107ae901c8ffad
     ApiHighlightList:
       type: object
       properties:
