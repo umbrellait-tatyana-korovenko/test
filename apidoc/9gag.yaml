@@ -29,7 +29,6 @@ tags:
   - name: Message
     description: ''
 
-
 x-globalCommonRequestHeaders: &COMMON_REQUEST_HEADERS
   - $ref: "#/components/parameters/headerTimestamp"
   - $ref: "#/components/parameters/headerAppId"
